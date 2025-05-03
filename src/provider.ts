@@ -5,6 +5,7 @@ type Logger = AppContext["fastify"]["log"];
 export interface LocationIQConfig {
     apiKey: string;
     baseUrl?: string;
+    autoRegisterControllers?: boolean;
 }
 
 // Common response interface for all LocationIQ API endpoints

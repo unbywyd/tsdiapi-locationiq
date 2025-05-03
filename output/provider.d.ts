@@ -3,6 +3,7 @@ type Logger = AppContext["fastify"]["log"];
 export interface LocationIQConfig {
     apiKey: string;
     baseUrl?: string;
+    autoRegisterControllers?: boolean;
 }
 export interface LocationResult {
     place_id: string;

@@ -1,8 +1,10 @@
 import { LocationIQProvider } from "./provider.js";
+import registerLocationRoutes from "./controllers/location.controller.js";
 let locationiqProvider;
 const defaultConfig = {
     apiKey: "",
-    baseUrl: "https://api.locationiq.com/v1"
+    baseUrl: "https://api.locationiq.com/v1",
+    autoRegisterControllers: true
 };
 class LocationIQPlugin {
     name = "tsdiapi-locationiq";
@@ -22,6 +24,11 @@ class LocationIQPlugin {
         this.provider.init(this.config, ctx.fastify.log);
         locationiqProvider = this.provider;
         ctx.fastify.decorate('locationiq', this.provider);
+    }
+    async preReady() {
+        if (this.config.autoRegisterControllers) {
+            await registerLocationRoutes(this.context);
+        }
     }
 }
 export function useLocationIQProvider() {

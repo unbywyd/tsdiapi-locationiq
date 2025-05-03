@@ -12,6 +12,7 @@ declare class LocationIQPlugin implements AppPlugin {
     provider: LocationIQProvider;
     constructor(config?: LocationIQConfig);
     onInit(ctx: AppContext): Promise<void>;
+    preReady(): Promise<void>;
 }
 export declare function useLocationIQProvider(): LocationIQProvider;
 export default function createPlugin(config?: LocationIQConfig): LocationIQPlugin;
