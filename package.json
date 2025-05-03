@@ -1,0 +1,44 @@
+{
+  "name": "@tsdiapi/locationiq",
+  "description": "A TSDIAPI plugin to extend API functionality with locationiq.",
+  "version": "0.0.1",
+  "main": "output/index.js",
+  "types": "output/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "unbywyd",
+  "engines": {
+    "node": ">=18.19.0"
+  },
+  "keywords": [
+    "tsdiapi"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unbywyd/tsdiapi-locationiq"
+  },
+  "homepage": "https://github.com/unbywyd/tsdiapi-locationiq",
+  "files": [
+    "output/",
+    "README.md",
+    "LICENSE.md",
+    "tsdiapi.config.json",
+    "files/",
+    "generators/"
+  ],
+  "devDependencies": {
+    "@tsdiapi/server": "^0.2.39",
+    "@types/node": "^22.15.3",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "reflect-metadata": "^0.2.2",
+    "typedi": "^0.10.0"
+  }
+}

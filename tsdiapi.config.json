@@ -1,0 +1,20 @@
+{
+  "name": "tsdiapi-locationiq",
+  "description": "A TSDIAPI plugin to extend API functionality with locationiq.",
+  "variables": [
+    {
+      "name": "TSDIAPI_LOCATIONIQ_VARIABLE_NAME",
+      "type": "string",
+      "configurable": true,
+      "description": "Access Key",
+      "inquirer": {
+        "type": "input",
+        "message": "Access Key"
+      }
+    }
+  ],
+  "postMessages": [
+    "✅ Plugin tsdiapi-locationiq has been successfully installed!",
+    "📖 Check the documentation for more details!"
+  ]
+}
