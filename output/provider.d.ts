@@ -1,4 +1,4 @@
-import type { AppContext } from "@tsdiapi/server";
+import { type AppContext } from "@tsdiapi/server";
 type Logger = AppContext["fastify"]["log"];
 export interface LocationIQConfig {
     apiKey: string;

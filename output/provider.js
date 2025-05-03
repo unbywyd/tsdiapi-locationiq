@@ -1,4 +1,5 @@
-import axios from 'axios';
+import { response400 } from "@tsdiapi/server";
+import axios, { AxiosError } from 'axios';
 export class LocationIQProvider {
     config;
     logger;
@@ -24,11 +25,17 @@ export class LocationIQProvider {
                     dedupe: 1
                 }
             });
+            if (response.data.error) {
+                throw response400(response.data.error);
+            }
             return response.data.map(this.mapLocationResult);
         }
         catch (error) {
             this.logger.error(`Error in autocomplete: ${error}`);
-            throw new Error('Failed to fetch autocomplete results');
+            if (error instanceof AxiosError) {
+                throw response400(error.response?.data.error || 'Failed to fetch autocomplete results');
+            }
+            throw response400('Failed to fetch autocomplete results');
         }
     }
     async forward(query, options = {}) {
@@ -45,11 +52,17 @@ export class LocationIQProvider {
                     'accept-language': options.acceptLanguage || 'en'
                 }
             });
+            if (response.data.error) {
+                throw response400(response.data.error);
+            }
             return response.data.map(this.mapLocationResult);
         }
         catch (error) {
             this.logger.error(`Error in forward geocoding: ${error}`);
-            throw new Error('Failed to fetch forward geocoding results');
+            if (error instanceof AxiosError) {
+                throw response400(error.response?.data.error || 'Failed to fetch forward geocoding results');
+            }
+            throw response400('Failed to fetch forward geocoding results');
         }
     }
     async reverse(lat, lon, options = {}) {
@@ -65,11 +78,17 @@ export class LocationIQProvider {
                     'accept-language': options.acceptLanguage || 'en'
                 }
             });
+            if (response.data.error) {
+                throw response400(response.data.error);
+            }
             return this.mapLocationResult(response.data);
         }
         catch (error) {
             this.logger.error(`Error in reverse geocoding: ${error}`);
-            throw new Error('Failed to fetch reverse geocoding results');
+            if (error instanceof AxiosError) {
+                throw response400(error.response?.data.error || 'Failed to fetch reverse geocoding results');
+            }
+            throw response400('Failed to fetch reverse geocoding results');
         }
     }
     mapLocationResult(item) {
