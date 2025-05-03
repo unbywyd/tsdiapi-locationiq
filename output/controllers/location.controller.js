@@ -7,10 +7,12 @@ export default async function registerLocationRoutes({ useRoute }) {
         .controller('location')
         .get('/search')
         .description('Search locations by query')
-        .auth()
         .query(Type.Object({
         q: Type.String(),
-        limit: Type.Optional(Type.Number())
+        limit: Type.Optional(Type.Number()),
+        language: Type.Optional(Type.String()),
+        countrycodes: Type.Optional(Type.Array(Type.String())),
+        normalizecity: Type.Optional(Type.Union([Type.Literal(0), Type.Literal(1)]))
     }))
         .code(400, ResponseErrorSchema)
         .code(403, ResponseErrorSchema)
@@ -26,7 +28,12 @@ export default async function registerLocationRoutes({ useRoute }) {
         .guard(JWTGuard())
         .handler(async (req) => {
         const locationService = useLocationIQProvider();
-        const data = await locationService.forward(req.query.q, { limit: req.query.limit });
+        const data = await locationService.forward(req.query.q, {
+            limit: req.query.limit,
+            acceptLanguage: req.query.language,
+            countrycodes: req.query.countrycodes,
+            normalizecity: req.query.normalizecity
+        });
         return { status: 200, data };
     })
         .build();
@@ -36,8 +43,13 @@ export default async function registerLocationRoutes({ useRoute }) {
         .description('Get location by coordinates')
         .query(Type.Object({
         lat: Type.Number(),
-        lon: Type.Number()
+        lon: Type.Number(),
+        language: Type.Optional(Type.String()),
+        normalizecity: Type.Optional(Type.Union([Type.Literal(0), Type.Literal(1)]))
     }))
+        .code(400, ResponseErrorSchema)
+        .code(403, ResponseErrorSchema)
+        .code(500, ResponseErrorSchema)
         .code(200, Type.Object({
         place_id: Type.Optional(Type.String()),
         display_name: Type.String(),
@@ -45,14 +57,14 @@ export default async function registerLocationRoutes({ useRoute }) {
         lon: Type.String(),
         address: Type.Optional(Type.Any())
     }))
-        .code(400, ResponseErrorSchema)
-        .code(403, ResponseErrorSchema)
-        .code(500, ResponseErrorSchema)
         .auth('bearer')
         .guard(JWTGuard())
         .handler(async (req) => {
         const locationService = useLocationIQProvider();
-        const data = await locationService.reverse(req.query.lat, req.query.lon);
+        const data = await locationService.reverse(req.query.lat, req.query.lon, {
+            acceptLanguage: req.query.language,
+            normalizecity: req.query.normalizecity
+        });
         return { status: 200, data };
     })
         .build();
@@ -62,8 +74,14 @@ export default async function registerLocationRoutes({ useRoute }) {
         .description('Get location suggestions')
         .query(Type.Object({
         q: Type.String(),
-        limit: Type.Optional(Type.Number())
+        limit: Type.Optional(Type.Number()),
+        language: Type.Optional(Type.String()),
+        countrycodes: Type.Optional(Type.Array(Type.String())),
+        normalizecity: Type.Optional(Type.Union([Type.Literal(0), Type.Literal(1)]))
     }))
+        .code(400, ResponseErrorSchema)
+        .code(403, ResponseErrorSchema)
+        .code(500, ResponseErrorSchema)
         .code(200, Type.Array(Type.Object({
         place_id: Type.Optional(Type.String()),
         display_name: Type.String(),
@@ -71,14 +89,16 @@ export default async function registerLocationRoutes({ useRoute }) {
         lon: Type.String(),
         address: Type.Optional(Type.Any())
     })))
-        .code(400, ResponseErrorSchema)
-        .code(403, ResponseErrorSchema)
-        .code(500, ResponseErrorSchema)
         .auth('bearer')
         .guard(JWTGuard())
         .handler(async (req) => {
         const locationService = useLocationIQProvider();
-        const data = await locationService.autocomplete(req.query.q, req.query.limit);
+        const data = await locationService.autocomplete(req.query.q, {
+            limit: req.query.limit,
+            acceptLanguage: req.query.language,
+            countrycodes: req.query.countrycodes,
+            normalizecity: req.query.normalizecity
+        });
         return { status: 200, data };
     })
         .build();

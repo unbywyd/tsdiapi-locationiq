@@ -6,7 +6,7 @@ export interface LocationIQConfig {
     autoRegisterControllers?: boolean;
 }
 export interface LocationResult {
-    place_id: string;
+    place_id?: string;
     licence: string;
     osm_type: string;
     osm_id: string;
@@ -36,16 +36,27 @@ export interface LocationResult {
 export interface ForwardGeocodingOptions {
     format?: 'json' | 'xml' | 'xmlv1.1';
     limit?: number;
+    countrycodes?: string[];
+    normalizecity?: 0 | 1;
+    acceptLanguage?: string;
 }
 export interface ReverseGeocodingOptions {
     format?: 'json' | 'xml' | 'xmlv1.1';
+    normalizecity?: 0 | 1;
+    acceptLanguage?: string;
+}
+export interface AutocompleteOptions {
+    limit?: number;
+    countrycodes?: string[];
+    normalizecity?: 0 | 1;
+    acceptLanguage?: string;
 }
 export declare class LocationIQProvider {
     private config;
     private logger;
     private readonly defaultBaseUrl;
     init(config: LocationIQConfig, logger: Logger): void;
-    autocomplete(query: string, limit?: number): Promise<LocationResult[]>;
+    autocomplete(query: string, options?: AutocompleteOptions): Promise<LocationResult[]>;
     forward(query: string, options?: ForwardGeocodingOptions): Promise<LocationResult[]>;
     reverse(lat: number, lon: number, options?: ReverseGeocodingOptions): Promise<LocationResult>;
     private mapLocationResult;

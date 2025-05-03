@@ -10,14 +10,17 @@ export class LocationIQProvider {
         };
         this.logger = logger;
     }
-    async autocomplete(query, limit = 5) {
+    async autocomplete(query, options = {}) {
         try {
             this.logger.info(`Searching locations for query: ${query}`);
             const response = await axios.get(`${this.config.baseUrl}/autocomplete`, {
                 params: {
                     key: this.config.apiKey,
                     q: query,
-                    limit,
+                    limit: options.limit,
+                    ...(options.countrycodes && { countrycodes: options.countrycodes.join(',') }),
+                    ...(options.normalizecity && { normalizecity: options.normalizecity }),
+                    'accept-language': options.acceptLanguage || 'en',
                     dedupe: 1
                 }
             });
@@ -36,7 +39,10 @@ export class LocationIQProvider {
                     key: this.config.apiKey,
                     q: query,
                     format: options.format || 'json',
-                    limit: options.limit || 5
+                    limit: options.limit,
+                    ...(options.countrycodes && { countrycodes: options.countrycodes.join(',') }),
+                    ...(options.normalizecity && { normalizecity: options.normalizecity }),
+                    'accept-language': options.acceptLanguage || 'en'
                 }
             });
             return response.data.map(this.mapLocationResult);
@@ -54,7 +60,9 @@ export class LocationIQProvider {
                     key: this.config.apiKey,
                     lat,
                     lon,
-                    format: options.format || 'json'
+                    format: options.format || 'json',
+                    ...(options.normalizecity && { normalizecity: options.normalizecity }),
+                    'accept-language': options.acceptLanguage || 'en'
                 }
             });
             return this.mapLocationResult(response.data);
