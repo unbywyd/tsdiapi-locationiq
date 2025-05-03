@@ -11,7 +11,7 @@ export interface LocationIQConfig {
 // Common response interface for all LocationIQ API endpoints
 export interface LocationResult {
     // Common fields for all responses
-    place_id: string;
+    place_id?: string;
     licence: string;
     osm_type: string;
     osm_id: string;
@@ -51,10 +51,22 @@ export interface LocationResult {
 export interface ForwardGeocodingOptions {
     format?: 'json' | 'xml' | 'xmlv1.1';
     limit?: number;
+    countrycodes?: string[];
+    normalizecity?: 0 | 1;
+    acceptLanguage?: string;
 }
 
 export interface ReverseGeocodingOptions {
     format?: 'json' | 'xml' | 'xmlv1.1';
+    normalizecity?: 0 | 1;
+    acceptLanguage?: string;
+}
+
+export interface AutocompleteOptions {
+    limit?: number;
+    countrycodes?: string[];
+    normalizecity?: 0 | 1;
+    acceptLanguage?: string;
 }
 
 export class LocationIQProvider {
@@ -70,7 +82,7 @@ export class LocationIQProvider {
         this.logger = logger;
     }
 
-    async autocomplete(query: string, limit: number = 5): Promise<LocationResult[]> {
+    async autocomplete(query: string, options: AutocompleteOptions = {}): Promise<LocationResult[]> {
         try {
             this.logger.info(`Searching locations for query: ${query}`);
 
@@ -78,7 +90,10 @@ export class LocationIQProvider {
                 params: {
                     key: this.config.apiKey,
                     q: query,
-                    limit,
+                    limit: options.limit,
+                    ...(options.countrycodes && { countrycodes: options.countrycodes.join(',') }),
+                    ...(options.normalizecity && { normalizecity: options.normalizecity }),
+                    'accept-language': options.acceptLanguage || 'en',
                     dedupe: 1
                 }
             });
@@ -99,7 +114,10 @@ export class LocationIQProvider {
                     key: this.config.apiKey,
                     q: query,
                     format: options.format || 'json',
-                    limit: options.limit || 5
+                    limit: options.limit,
+                    ...(options.countrycodes && { countrycodes: options.countrycodes.join(',') }),
+                    ...(options.normalizecity && { normalizecity: options.normalizecity }),
+                    'accept-language': options.acceptLanguage || 'en'
                 }
             });
 
@@ -119,7 +137,9 @@ export class LocationIQProvider {
                     key: this.config.apiKey,
                     lat,
                     lon,
-                    format: options.format || 'json'
+                    format: options.format || 'json',
+                    ...(options.normalizecity && { normalizecity: options.normalizecity }),
+                    'accept-language': options.acceptLanguage || 'en'
                 }
             });
 
