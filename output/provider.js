@@ -1,78 +1,18 @@
-import type { AppContext } from "@tsdiapi/server";
 import axios from 'axios';
-type Logger = AppContext["fastify"]["log"];
-
-export interface LocationIQConfig {
-    apiKey: string;
-    baseUrl?: string;
-}
-
-// Common response interface for all LocationIQ API endpoints
-export interface LocationResult {
-    // Common fields for all responses
-    place_id: string;
-    licence: string;
-    osm_type: string;
-    osm_id: string;
-    lat: string;
-    lon: string;
-    display_name: string;
-
-    // Forward Geocoding specific fields
-    class?: string;
-    type?: string;
-    importance?: number;
-
-    // Autocomplete specific fields
-    display_place?: string;
-    display_address?: string;
-    boundingbox?: string[];
-
-    // Address fields (used in different ways by different endpoints)
-    address?: {
-        // Forward Geocoding address fields
-        name?: string;
-        house_number?: string;
-        road?: string;
-        city?: string;
-        state?: string;
-        postcode?: string;
-        country?: string;
-
-        // Reverse Geocoding specific address fields
-        attraction?: string;
-        suburb?: string;
-        state_district?: string;
-        country_code?: string;
-    };
-}
-
-export interface ForwardGeocodingOptions {
-    format?: 'json' | 'xml' | 'xmlv1.1';
-    limit?: number;
-}
-
-export interface ReverseGeocodingOptions {
-    format?: 'json' | 'xml' | 'xmlv1.1';
-}
-
 export class LocationIQProvider {
-    private config: LocationIQConfig;
-    private logger: Logger;
-    private readonly defaultBaseUrl = 'https://api.locationiq.com/v1';
-
-    init(config: LocationIQConfig, logger: Logger) {
+    config;
+    logger;
+    defaultBaseUrl = 'https://api.locationiq.com/v1';
+    init(config, logger) {
         this.config = {
             ...config,
             baseUrl: config.baseUrl || this.defaultBaseUrl
         };
         this.logger = logger;
     }
-
-    async autocomplete(query: string, limit: number = 5): Promise<LocationResult[]> {
+    async autocomplete(query, limit = 5) {
         try {
             this.logger.info(`Searching locations for query: ${query}`);
-
             const response = await axios.get(`${this.config.baseUrl}/autocomplete`, {
                 params: {
                     key: this.config.apiKey,
@@ -81,18 +21,16 @@ export class LocationIQProvider {
                     dedupe: 1
                 }
             });
-
             return response.data.map(this.mapLocationResult);
-        } catch (error) {
+        }
+        catch (error) {
             this.logger.error(`Error in autocomplete: ${error}`);
             throw new Error('Failed to fetch autocomplete results');
         }
     }
-
-    async forward(query: string, options: ForwardGeocodingOptions = {}): Promise<LocationResult[]> {
+    async forward(query, options = {}) {
         try {
             this.logger.info(`Forward geocoding for query: ${query}`);
-
             const response = await axios.get(`${this.config.baseUrl}/search`, {
                 params: {
                     key: this.config.apiKey,
@@ -101,18 +39,16 @@ export class LocationIQProvider {
                     limit: options.limit || 5
                 }
             });
-
             return response.data.map(this.mapLocationResult);
-        } catch (error) {
+        }
+        catch (error) {
             this.logger.error(`Error in forward geocoding: ${error}`);
             throw new Error('Failed to fetch forward geocoding results');
         }
     }
-
-    async reverse(lat: number, lon: number, options: ReverseGeocodingOptions = {}): Promise<LocationResult> {
+    async reverse(lat, lon, options = {}) {
         try {
             this.logger.info(`Reverse geocoding for coordinates: ${lat}, ${lon}`);
-
             const response = await axios.get(`${this.config.baseUrl}/reverse`, {
                 params: {
                     key: this.config.apiKey,
@@ -121,15 +57,14 @@ export class LocationIQProvider {
                     format: options.format || 'json'
                 }
             });
-
             return this.mapLocationResult(response.data);
-        } catch (error) {
+        }
+        catch (error) {
             this.logger.error(`Error in reverse geocoding: ${error}`);
             throw new Error('Failed to fetch reverse geocoding results');
         }
     }
-
-    private mapLocationResult(item: any): LocationResult {
+    mapLocationResult(item) {
         return {
             // Common fields
             place_id: item.place_id,
@@ -139,17 +74,14 @@ export class LocationIQProvider {
             lat: item.lat,
             lon: item.lon,
             display_name: item.display_name,
-
             // Forward Geocoding fields
             class: item.class,
             type: item.type,
             importance: item.importance,
-
             // Autocomplete fields
             display_place: item.display_place,
             display_address: item.display_address,
             boundingbox: item.boundingbox,
-
             // Address fields
             address: item.address ? {
                 // Forward Geocoding address fields
@@ -160,7 +92,6 @@ export class LocationIQProvider {
                 state: item.address.state,
                 postcode: item.address.postcode,
                 country: item.address.country,
-
                 // Reverse Geocoding address fields
                 attraction: item.address.attraction,
                 suburb: item.address.suburb,
@@ -170,3 +101,4 @@ export class LocationIQProvider {
         };
     }
 }
+//# sourceMappingURL=provider.js.map
