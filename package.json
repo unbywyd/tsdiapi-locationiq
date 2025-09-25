@@ -1,7 +1,7 @@
 {
   "name": "@tsdiapi/locationiq",
   "description": "A TSDIAPI plugin to extend API functionality with locationiq.",
-  "version": "0.0.5",
+  "version": "0.3.0",
   "main": "output/index.js",
   "types": "output/index.d.ts",
   "type": "module",
@@ -33,7 +33,7 @@
     "generators/"
   ],
   "devDependencies": {
-    "@tsdiapi/server": "^0.2.39",
+    "@tsdiapi/server": "^0.3.0",
     "@types/node": "^22.15.3",
     "typescript": "^5.8.3"
   },
