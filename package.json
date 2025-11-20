@@ -1,7 +1,7 @@
 {
   "name": "@tsdiapi/locationiq",
   "description": "A TSDIAPI plugin to extend API functionality with locationiq.",
-  "version": "0.3.0",
+  "version": "0.4.1",
   "main": "output/index.js",
   "types": "output/index.d.ts",
   "type": "module",
@@ -33,7 +33,7 @@
     "generators/"
   ],
   "devDependencies": {
-    "@tsdiapi/server": "^0.3.0",
+    "@tsdiapi/server": "^0.4.0",
     "@types/node": "^22.15.3",
     "typescript": "^5.8.3"
   },
@@ -42,7 +42,7 @@
     "typedi": "^0.10.0"
   },
   "dependencies": {
-    "@tsdiapi/jwt-auth": "^0.3.0",
+    "@tsdiapi/jwt-auth": "^0.4.0",
     "axios": "^1.9.0"
   }
 }
