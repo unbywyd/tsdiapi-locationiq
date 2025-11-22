@@ -33,7 +33,7 @@
     "generators/"
   ],
   "devDependencies": {
-    "@tsdiapi/server": "^0.4.0",
+    "@tsdiapi/server": "^0.4.1",
     "@types/node": "^22.15.3",
     "typescript": "^5.8.3"
   },
